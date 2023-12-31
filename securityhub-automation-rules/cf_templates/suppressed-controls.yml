@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: A template to suppress database related security hub controls that cause no actual threat.
+
+Resources:
+  SecurityHubAutomationRuleDatabase:
+    Type: 'AWS::SecurityHub::AutomationRule'
+    Properties:
+      IsTerminal: true
+      RuleName: "Suppress Database Controls"
+      RuleOrder: 3
+      RuleStatus: "ENABLED"
+      Description: "Suppresses database related controls of those databases that are not in use."
+      Criteria:
+        ComplianceSecurityControlId:
+          - Value: "Neptune.5"
+            Comparison: "EQUALS"
+            Comparison: "EQUALS"
+          - Value: "Redshift.3"
+            Comparison: "EQUALS"
+          - Value: "Redshift.4"
+            Comparison: "EQUALS"
+          - Value: "Redshift.6"
+            Comparison: "EQUALS"
+          - Value: "Redshift.7"
+            Comparison: "EQUALS"
+          - Value: "Redshift.8"
+            Comparison: "EQUALS"
+          - Value: "Redshift.9"
+            Comparison: "EQUALS"
+          - Value: "Opensearch.5"
+            Comparison: "EQUALS"
+          - Value: "Opensearch.6"
+            Comparison: "EQUALS"
+      Actions:
+        - Type: "FINDING_FIELDS_UPDATE"
+          FindingFieldsUpdate:
+            Workflow:
+              Status: "SUPPRESSED"
+            Note:
+              Text: "Database control finding suppressed. Currently, this database technology is not in use."
+              UpdatedBy: "Security-Hub-automations"

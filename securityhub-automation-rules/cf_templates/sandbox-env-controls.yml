@@ -1,0 +1,30 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: A template to set security findings severity to low that result from sandbox related resources.
+
+Resources:
+  SecurityHubAutomationRuleDatabase:
+    Type: 'AWS::SecurityHub::AutomationRule'
+    Properties:
+      IsTerminal: true
+      RuleName: "Reduce priority of security findings of sandbox related resources"
+      RuleOrder: 2
+      RuleStatus: "ENABLED"
+      Description: "Set severity level of controls to low that result out of sandbox related resources."
+      Criteria:
+        AwsAccountId:
+          - Value: "111112222233"
+            Comparison: "EQUALS"
+        SeverityLabel: 
+          - Value: "INFORMATIONAL"
+            Comparison: "NOT_EQUALS"
+        RecordState:
+          - Value: "ACTIVE"
+            Comparison: "EQUALS"
+      Actions:
+        - Type: "FINDING_FIELDS_UPDATE"
+          FindingFieldsUpdate:
+            Severity:
+                Label: "LOW"
+            Note:
+              Text: "Sandbox related finding set to low priority."
+              UpdatedBy: "Security-Hub-automations"

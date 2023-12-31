@@ -1,0 +1,30 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: A template to set security findings severity to critical that result from production environments.
+
+Resources:
+  SecurityHubAutomationRuleDatabase:
+    Type: 'AWS::SecurityHub::AutomationRule'
+    Properties:
+      IsTerminal: true
+      RuleName: "Elevate priority of security findings of production environment"
+      RuleOrder: 1
+      RuleStatus: "ENABLED"
+      Description: "Set severity level of controls to critical that result out of production environment."
+      Criteria:
+        AwsAccountId:
+          - Value: "778888899999"
+            Comparison: "EQUALS"
+        SeverityLabel: 
+          - Value: "INFORMATIONAL"
+            Comparison: "NOT_EQUALS"
+        RecordState:
+          - Value: "ACTIVE"
+            Comparison: "EQUALS"
+      Actions:
+        - Type: "FINDING_FIELDS_UPDATE"
+          FindingFieldsUpdate:
+            Severity:
+                Label: "CRITICAL"
+            Note:
+              Text: "production related finding set to critical."
+              UpdatedBy: "Security-Hub-automations"
